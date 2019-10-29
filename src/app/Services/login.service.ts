@@ -7,7 +7,7 @@ import { User } from '../Classes/user';
   providedIn: 'root'
 })
 export class LoginService {
-  private url: string;
+  url: string;
 
   constructor(private http: HttpClient) { 
     this.url = environment.baseUrl + '/users';

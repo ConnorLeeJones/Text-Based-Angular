@@ -2,11 +2,13 @@ import { UserProfile } from './user-profile';
 
 
 export class User {
-    id: number;
+    userId: number;
     username: string;
     password: string;
     userProfile: UserProfile;
 
 
     constructor(){}
+
+
 }

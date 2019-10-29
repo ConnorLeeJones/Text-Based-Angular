@@ -1,0 +1,17 @@
+
+    <div id="login">
+      <div class="card w-50 mx-auto my-5 bg-dark text-white bleh">
+  
+        <div class="container">
+          <h1>New Character</h1>
+          <form (ngSubmit)="onSubmit()" #userForm="ngForm">
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" [(ngModel)]="newPlayer.name" class="form-control" id="name" name="name"
+                placeholder="Username" required #name="ngModel">
+            </div>
+            <button type="submit" [disabled]="!userForm.form.valid" class="btn btn-success">Create</button>
+          </form>
+        </div>
+      </div>
+    </div>

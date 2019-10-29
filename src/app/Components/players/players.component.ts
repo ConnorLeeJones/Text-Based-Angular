@@ -16,6 +16,7 @@ export class PlayersComponent implements OnInit {
   constructor(private playerService: PlayerService) {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.players = this.currentUser.userProfile.game.players;
+    //this.players = this.playerService.getPlayers;
   }
 
   ngOnInit() {
