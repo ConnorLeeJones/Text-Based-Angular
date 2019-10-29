@@ -23,13 +23,12 @@ export class UserService {
   }
 
   addUser(user: User) {
-    this.http.post(this.url, user).subscribe(
-      user => { this.userLogin(user as User);
+    this.http.post(this.url, user).subscribe();
           // this.router.navigate(['/editProfile']);
-      }
+      
 
-    );
-    // this.router.navigate(['/editProfile']);
+    
+    this.router.navigate(['/login']);
 
   }
 
@@ -43,14 +42,13 @@ export class UserService {
     this.currentUser = null;
     this.loginService.login(user).subscribe(user => 
       {this.currentUser = user;
-        this.currentUser.password = null;
-        this.currentUserProfile = this.currentUser.userProfile;
-        console.log(this.currentUserProfile);
+        //this.currentUser.password = null;
+        //this.currentUserProfile = this.currentUser.userProfile;
+        //console.log(this.currentUserProfile);
         localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
-        location.reload();
       });
       
-      this.router.navigate(['/home']);
+      this.router.navigate(['/']);
 
 
   }
