@@ -4,6 +4,7 @@ import { LoginComponent } from './Components/login/login.component';
 import { SignUpComponent } from './Components/sign-up/sign-up.component';
 import { PlayersComponent } from './Components/players/players.component';
 import { NewPlayerComponent } from './Components/new-player/new-player.component';
+import { BattleComponent } from './Components/battle/battle.component';
 
 
 const routes: Routes = [
@@ -11,6 +12,7 @@ const routes: Routes = [
   { path: 'signup', component: SignUpComponent},
   { path: 'players', component: PlayersComponent},
   { path: 'newplayer', component: NewPlayerComponent},
+  { path: 'battle', component: BattleComponent},
   { path: '', redirectTo: '/#', pathMatch: 'full' },
 
 ];
