@@ -8,6 +8,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HttpClientModule } from '@angular/common/http';
 import { PlayersComponent } from './Components/players/players.component';
 import { NewPlayerComponent } from './Components/new-player/new-player.component';
+import { BattleComponent } from './Components/battle/battle.component';
 
 
 
@@ -17,7 +18,8 @@ import { NewPlayerComponent } from './Components/new-player/new-player.component
     SignUpComponent,
     LoginComponent,
     PlayersComponent,
-    NewPlayerComponent
+    NewPlayerComponent,
+    BattleComponent
   ],
   imports: [
     BrowserModule,
