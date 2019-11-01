@@ -1,28 +1,33 @@
-<p>battle works!</p>
+<!-- <p>battle works!</p> -->
 <app-players></app-players>
 
-<div *ngIf=battle class="card my-5 w-50" id="monster list" >
-        <div class ="table-wrapper-scroll-y my-custom-scrollbar">
-        <table class="table table-bordered table-striped">
-            <thead class="thead-dark">
-            <tr>
-                <th scope="col">NAME</th>
-                <th scope="col">HP</th>
-                <th scope="col">MP</th>
+<table *ngIf=battle class="table table-bordered table-secondary">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">NAME</th>
+        <th scope="col">HP</th>
+        <th scope="col">MP</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr  *ngFor="let monster of battle.monsters">
+        <td>{{ monster.name }}</td>
+        <td>{{ monster.stats.HP }} / {{ monster.stats.MAX_HP }}</td>
+        <td>{{ monster.stats.MP }} / {{ monster.stats.MAX_MP }}</td>
+      </tr>
+    </tbody>
+  </table>
 
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let monster of battle.monsters">
 
-              <td>{{ monster.name }}</td>
-                <td>{{ monster.stats.HP }} / {{ monster.stats.MAX_HP }}</td>
-                <td>{{ monster.stats.MP }} / {{ monster.stats.MAX_MP }}</td>
-            </tr>
-            </tbody>
-        </table>
-        </div>
+<!-- <input id="clickMe" type="button" value="clickme" (click)="newBattle();" /> -->
+
+<div class="card">
+  <div class="card-body">
+    {{this.battleText}}
+  </div>
+  <div class="btn-group" role="group" aria-label="Basic example">
+    <button type="button" class="btn btn-secondary">Left</button>
+    <button type="button" class="btn btn-secondary">Middle</button>
+    <button type="button" class="btn btn-secondary">Right</button>
+  </div>
 </div>
-
-
-<input id="clickMe" type="button" value="clickme" (click)="newBattle();" />
