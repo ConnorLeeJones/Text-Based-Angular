@@ -18,6 +18,7 @@ export class BattleComponent implements OnInit {
   gameId : number;
   playerForm: PlayerForm = new PlayerForm();
   battle: BattleModel;
+  battleText: String = new String();
 
 
   constructor(private battleService: BattleService) { 
@@ -28,14 +29,28 @@ export class BattleComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.newBattle();
   }
 
   newBattle(){
     this.battleService.newBattle(this.playerForm).subscribe(
       battle => {
-        this.battle = battle as BattleModel
-        console.log(this.battle)}
-    );
+        this.battle = battle as BattleModel;
+        this.startBattle();
+      });
+  }
+
+  startBattle(){
+    this.battleText = "Start";
+
+    for (let creature in this.battle.creatures){
+      console.log("Test");
+      if (this.players.includes(creature)){
+        console.log("No");
+      }
+    }
+
+    console.log(this.battle);
   }
 
 }
