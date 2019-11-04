@@ -27,6 +27,8 @@ export class BattleComponent implements OnInit {
   battleText: String = new String();
   playerTurnComponent: PlayerTurnComponent = new PlayerTurnComponent();
   isPlayerTurn: boolean = false;
+  i: number = 0;
+  choice: String;
 
 
   constructor(private battleService: BattleService) { 
@@ -52,23 +54,23 @@ export class BattleComponent implements OnInit {
   startBattle(){
     this.battleText = "Start";
     this.arraysetUp();
+    this.turns();
+  }
 
-    
-
-    for (let i = 0; i < this.creatures.length; i++){
-      this.battleText = this.creatures[i] + "'s turn.";
-      i -= this.removeDeadPlayers();
-      if (this.players.includes(this.creatures[i])) {
-        console.log("Player");
-        this.playerTurn(this.creatures[i]);
-      } 
-      else if (this.monsters.includes(this.creatures[i])){
-        console.log("Mon");
-        this.monsterTurn(this.creatures[i]);
-      }
+  turns(){
+    console.log(this.i);
+    this.battleText = this.creatures[this.i] + "'s turn.";
+    this.i -= this.removeDeadPlayers();
+    if (this.players.includes(this.creatures[this.i])) {
+      console.log("Player");
+      this.playerTurn(this.creatures[this.i]);
+    } 
+    else if (this.monsters.includes(this.creatures[this.i])){
+      console.log("Mon");
+      this.monsterTurn(this.creatures[this.i]);
+    } else {
+      console.log("done");
     }
-
-
   }
 
 
@@ -119,42 +121,66 @@ export class BattleComponent implements OnInit {
 
   playerTurn(player : Creature){
     //alert("Player turn");
+    console.log("p turn");
     this.isPlayerTurn = true;
+    let choice: String;
     this.getUserChoice();
+
+    //choice = this.getUserChoice();
     this.isPlayerTurn = false;
+    //this.i++;
+    //this.turns();
   }
 
   monsterTurn(monster : Creature){
-
+    console.log("Mon turn");
+    this.i++;
+    this.turns();
   }
 
 
   getUserChoice() {
-    //$("choice").show();
-    document.getElementById("choice").style.display = "block";
-    let choice: String;
-    $('#submit1, #submit2').click(function () {
-      if (this.id == 'submit1') {
-         alert('Submit 1 clicked');
-         choice = "1";
-         
-      }
-      else if (this.id == 'submit2') {
-         alert('Submit 2 clicked');
-         choice = "2";
-      }
-    });
-    this.continueCode(choice);
-    
+    console.log("player turn");
+    var ch = document.getElementById("choice");
+    ch.style.display = "block";
+    let buttons = ['Attack', 'Defend', 'Spell'];
+    this.buttonSetUp(buttons);
   }
 
 
 
 
-  continueCode(choice: String){
-    console.log(choice);
-    console.log("ADFAF");
+  continueCode(choice: any){
+    alert(choice);
+    switch (choice){
+      case "Attack":
+        this.playerAttack();
+
+
+    }
+    // this.i++;
+    // this.turns();
   }
 
+  playerAttack(){
+    let monsterNames = [];
+    this.monsters.forEach(monster => monsterNames.push(monster.name))
+    this.buttonSetUp(monsterNames);
+  }
+
+
+
+  buttonSetUp(buttons: any[]){
+    document.getElementById("buttons").innerHTML = "";
+    buttons.forEach(button => {
+      let b = document.createElement("button");
+      b.id = button;
+      b.innerText = button;
+      b.className = "btn btn-secondary";
+      console.log(b);
+      b.addEventListener('click', () => this.continueCode(button))
+      document.getElementById("buttons").appendChild(b);
+  });
+  }
 
 }
