@@ -5,6 +5,7 @@ export class Creature {
 
     name: String;
     stats: Stat[];
+    creature_id: number;
 
     constructor(){}
 
