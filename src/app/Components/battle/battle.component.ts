@@ -8,16 +8,16 @@ import { Observable } from 'rxjs';
 import { Monster } from 'src/app/Classes/monster';
 import { Creature } from 'src/app/Classes/creature';
 import { Stat } from 'src/app/Classes/stat';
-import { PlayerTurnComponent } from '../player-turn/player-turn.component';
 import { AttackDto } from 'src/app/Classes/attack-dto';
 import { PlayerService } from 'src/app/Services/player.service';
+import { AttackService } from 'src/app/Services/attack.service';
 
 @Component({
   selector: 'app-battle',
   templateUrl: './battle.component.html',
   styleUrls: ['./battle.component.css']
 })
-export class BattleComponent implements OnInit, OnChanges {
+export class BattleComponent implements OnInit {
 
   currentUser : User;
   players: Player[];
@@ -27,16 +27,13 @@ export class BattleComponent implements OnInit, OnChanges {
   playerForm: PlayerForm = new PlayerForm();
   battle: BattleModel;
   battleText: String = new String();
-  playerTurnComponent: PlayerTurnComponent = new PlayerTurnComponent();
-  isPlayerTurn: boolean = false;
   i: number = 0;
   choice: String;
   attackDto: AttackDto = new AttackDto();
 
 
-  constructor(private battleService: BattleService, private playerService: PlayerService) { 
+  constructor(private battleService: BattleService, private playerService: PlayerService, private attackService: AttackService) { 
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    //this.players = this.currentUser.userProfile.game.players;
     this.playerService.getPlayers().subscribe(players => this.players = players as Player[]);
     this.gameId = this.currentUser.userId;
     this.playerForm.gameId = this.currentUser.userId;
@@ -46,20 +43,14 @@ export class BattleComponent implements OnInit, OnChanges {
     this.newBattle();
   }
 
-  ngOnChanges(){
-    this.battleService.getBattle(this.playerForm).subscribe(
-      battle => {
-        this.battle = battle as BattleModel;
-        this.monsters = this.battle.monsters;
-        this.arraysetUp();
-      });
-  }
 
   newBattle(){
     this.battleService.newBattle(this.playerForm).subscribe(
       battle => {
         this.battle = battle as BattleModel;
         this.monsters = this.battle.monsters;
+        this.players = this.battle.players;
+        // this.creatures = this.battle.creatures;
         this.startBattle();
       });
   }
@@ -72,18 +63,25 @@ export class BattleComponent implements OnInit, OnChanges {
 
   turns(){
     console.log(this.i);
-    
-    this.i -= this.removeDeadPlayers();
+    this.attackDto = new AttackDto();
+    this.arraysetUp();
+    this.checkConditions();
+    //this.i -= this.removeDeadPlayers();
     if (this.i < 0){
-      this.i = 0;
+      this.finish();
     } else if (this.i >= this.creatures.length){
       this.i = 0;
     }
+
+    
     this.battleText = this.creatures[this.i].name + "'s turn.";
     console.log(this.creatures[this.i].name);
 
     console.log(this.i);
-    if (this.players.includes(this.creatures[this.i])) {
+    if (!this.creatureIsAlive(this.creatures[this.i])){
+        this.i++;
+        this.turns();
+    } else if (this.players.includes(this.creatures[this.i])) {
       console.log("Player");
       this.playerTurn(this.creatures[this.i]);
     } 
@@ -96,6 +94,10 @@ export class BattleComponent implements OnInit, OnChanges {
   }
 
 
+  finish(){
+    alert("Game over");
+    this.i = -100;
+  }
 
 
   arraysetUp(){
@@ -106,10 +108,6 @@ export class BattleComponent implements OnInit, OnChanges {
       this.creatures[i] = this.monsters[i - this.players.length];
     }
     this.creatures.sort((a, b) => (a.stats["SPEED"] < b.stats["SPEED"] ? 1 : -1));
-    // console.log("XXXXXX");
-    // console.log(this.creatures);
-    // console.log(this.players);
-    // console.log(this.monsters);
     this.attackDto.battleId = this.battle.battleId;
   }
 
@@ -118,56 +116,58 @@ export class BattleComponent implements OnInit, OnChanges {
     return creature.stats["HP"] > 0;
   }
 
-  removeDeadPlayers(): number{
-    let deadPlayers = 0;
-    for (let i = 0; i < this.creatures.length; i++){
-      if (!this.creatureIsAlive(this.creatures[i])){
-        //let deadCreature = this.creatures[i];
-        delete this.creatures[i];
-        deadPlayers++;
-      }
-
-      this.battleService.getBattle(this.playerForm).subscribe(
-        battle => {
-          this.battle = battle as BattleModel;
-          this.monsters = this.battle.monsters;
-          this.arraysetUp();
-        });
-    }
-    return deadPlayers;
-  }
-
   getTotalHp(creautreArr: Creature[]): number{
     let totalHp = 0;
+    console.log("DFDSFSDFSD");
     for (let i = 0; i < creautreArr.length; i++){
-      totalHp += creautreArr[i].stats["HP"];
+      if (!(creautreArr[i].stats["HP"] < 0)){
+        totalHp += creautreArr[i].stats["HP"];
+      }
+      //totalHp += creautreArr[i].stats["HP"];
+      console.log(totalHp);
+      console.log(creautreArr[i]);
     }
     return totalHp;
   }
 
-  checkWin(): boolean{
-    return this.getTotalHp(this.monsters) <= 0;
-  }
+  // checkWin(): boolean{
+  //   return this.getTotalHp(this.monsters) <= 0;
+  // }
 
-  checkLose(): boolean{
-    return this.getTotalHp(this.players) <= 0;
+  // checkLose(): boolean{
+  //   return this.getTotalHp(this.players) <= 0;
+  // }
+
+  checkConditions() {
+    if (this.getTotalHp(this.players) <= 0){
+      console.log("YOU LOSE");
+      this.finish();
+    } else if (this.getTotalHp(this.monsters) <= 0){
+      console.log("YOU WIN");
+      this.finish();
+    }
   }
 
   playerTurn(player : Creature){
-    //alert("Player turn");
     console.log("p turn");
-    this.isPlayerTurn = true;
     let choice: String;
     this.getUserChoice();
-
-    //choice = this.getUserChoice();
-    this.isPlayerTurn = false;
-    //this.i++;
-    //this.turns();
   }
 
   monsterTurn(monster : Creature){
     console.log("Mon turn");
+    console.log(this.creatures[this.i].creature_id);
+
+    this.attackDto.attacker = this.creatures[this.i];
+    let num = Math.floor(Math.random() * this.players.length);
+    console.log(num);
+    this.attackDto.attacked.push(this.players[num]);
+
+    this.attackDto.choice = "Attack";
+    console.log(this.attackDto);
+
+    this.attackService.attack(this.attackDto, this.battle);
+
     this.i++;
     this.turns();
   }
@@ -190,24 +190,15 @@ export class BattleComponent implements OnInit, OnChanges {
     switch (choice){
       case "Attack":
         this.playerAttack();
-
-
     }
-    // this.i++;
-    // this.turns();
   }
 
   chooseMonster(choice: any){
     console.log(choice);
-    this.attackDto.attackerId = this.creatures[this.i].creature_id;
-    this.attackDto.opponentId = choice.creature_id;
+    this.attackDto.attacker = this.creatures[this.i];
+    this.attackDto.attacked.push(choice);
     console.log(this.attackDto);
-    this.battleService.attack(this.attackDto).subscribe(battle => {
-      this.battle = battle as BattleModel;
-      this.monsters = this.battle.monsters;
-      this.players = this.battle.players;
-      this.arraysetUp();
-    });
+    this.attackService.attack(this.attackDto, this.battle);
     this.i++;
     this.turns();
   }
@@ -233,7 +224,6 @@ export class BattleComponent implements OnInit, OnChanges {
         b.addEventListener('click', () => this.continueCode(button))
       } else {
         b.addEventListener('click', () => this.chooseMonster(button))
-        //b.id = mon + "";
         b.innerText = button.name + "";
         mon++;
       }

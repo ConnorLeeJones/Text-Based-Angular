@@ -1,5 +1,21 @@
-<!-- <p>battle works!</p> -->
-<app-players></app-players>
+
+<table *ngIf=battle class="table table-bordered table-secondary">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">NAME</th>
+      <th scope="col">HP</th>
+      <th scope="col">MP</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr  *ngFor="let player of battle.players">
+      <td>{{ player.name }}</td>
+      <td>{{ player.stats.HP }} / {{ player.stats.MAX_HP }}</td>
+      <td>{{ player.stats.MP }} / {{ player.stats.MAX_MP }}</td>
+    </tr>
+  </tbody>
+</table>
+
 
 <table *ngIf=battle class="table table-bordered table-secondary">
     <thead class="thead-dark">
@@ -19,15 +35,10 @@
   </table>
 
 
-<!-- <input id="clickMe" type="button" value="clickme" (click)="newBattle();" /> -->
-<!-- <app-player-turn></app-player-turn> -->
 <div id="choice" class="card">
   <div class="card-body">
     {{this.battleText}}
   </div>
   <div id="buttons" class="btn-group" role="group" aria-label="Basic example">
-    <!-- <button id="submit1" type="button" class="btn btn-secondary" >Left</button>
-    <button id="submit2" type="button" class="btn btn-secondary" >Middle</button>
-    <button type="button" class="btn btn-secondary">Right</button> -->
   </div>
 </div>
