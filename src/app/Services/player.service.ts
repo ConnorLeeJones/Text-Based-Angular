@@ -16,15 +16,16 @@ export class PlayerService {
 
   constructor(private http: HttpClient) { 
     this.url = environment.baseUrl + '/players';
+    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
   }
 
   addPlayer(newPlayer: PlayerForm){
     return this.http.post(this.url, newPlayer).subscribe();
   }
 
-  // getPlayers(){
-  //   return this.http.get(this.url).subscribe();
-  // }
+  getPlayers() {
+    return this.http.get(this.url + '/' + this.currentUser.userId);
+  }
 
 
 }

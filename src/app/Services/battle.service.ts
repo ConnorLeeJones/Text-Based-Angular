@@ -5,6 +5,7 @@ import { Player } from '../Classes/player';
 import { PlayerForm } from '../Classes/player-form';
 import { BattleModel } from '../Classes/battle-model';
 import { Observable } from 'rxjs';
+import { AttackDto } from '../Classes/attack-dto';
 
 
 @Injectable({
@@ -25,7 +26,20 @@ export class BattleService {
     //return this.battle;
     
 
-      }
+  }
+
+
+  getBattle(playerForm : PlayerForm){
+    //console.log(gameId);
+    return this.http.get(this.url + "/" + playerForm.gameId);
+    //return this.battle;
+    
+
+  }
+
+  attack(attackDto: AttackDto){
+    return this.http.put(this.url, attackDto);
+  }
   
 
 }
