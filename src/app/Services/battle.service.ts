@@ -28,6 +28,15 @@ export class BattleService {
 
   }
 
+
+  getBattle(playerForm : PlayerForm){
+    //console.log(gameId);
+    return this.http.get(this.url + "/" + playerForm.gameId);
+    //return this.battle;
+    
+
+  }
+
   attack(attackDto: AttackDto){
     return this.http.put(this.url, attackDto);
   }

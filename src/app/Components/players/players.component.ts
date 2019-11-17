@@ -15,7 +15,7 @@ export class PlayersComponent implements OnInit {
 
   constructor(private playerService: PlayerService) {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    this.players = this.currentUser.userProfile.game.players;
+    this.playerService.getPlayers().subscribe(players => this.players = players as Player[]);
     //this.players = this.playerService.getPlayers;
   }
 

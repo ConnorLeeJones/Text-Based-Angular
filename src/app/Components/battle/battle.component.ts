@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnChanges } from '@angular/core';
 import { BattleService } from 'src/app/Services/battle.service';
 import { User } from 'src/app/Classes/user';
 import { Player } from 'src/app/Classes/player';
@@ -10,13 +10,14 @@ import { Creature } from 'src/app/Classes/creature';
 import { Stat } from 'src/app/Classes/stat';
 import { PlayerTurnComponent } from '../player-turn/player-turn.component';
 import { AttackDto } from 'src/app/Classes/attack-dto';
+import { PlayerService } from 'src/app/Services/player.service';
 
 @Component({
   selector: 'app-battle',
   templateUrl: './battle.component.html',
   styleUrls: ['./battle.component.css']
 })
-export class BattleComponent implements OnInit {
+export class BattleComponent implements OnInit, OnChanges {
 
   currentUser : User;
   players: Player[];
@@ -33,15 +34,25 @@ export class BattleComponent implements OnInit {
   attackDto: AttackDto = new AttackDto();
 
 
-  constructor(private battleService: BattleService) { 
+  constructor(private battleService: BattleService, private playerService: PlayerService) { 
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    this.players = this.currentUser.userProfile.game.players;
+    //this.players = this.currentUser.userProfile.game.players;
+    this.playerService.getPlayers().subscribe(players => this.players = players as Player[]);
     this.gameId = this.currentUser.userId;
     this.playerForm.gameId = this.currentUser.userId;
   }
 
   ngOnInit() {
     this.newBattle();
+  }
+
+  ngOnChanges(){
+    this.battleService.getBattle(this.playerForm).subscribe(
+      battle => {
+        this.battle = battle as BattleModel;
+        this.monsters = this.battle.monsters;
+        this.arraysetUp();
+      });
   }
 
   newBattle(){
@@ -60,7 +71,7 @@ export class BattleComponent implements OnInit {
   }
 
   turns(){
-    //console.log(this.i);
+    console.log(this.i);
     
     this.i -= this.removeDeadPlayers();
     if (this.i < 0){
@@ -69,6 +80,8 @@ export class BattleComponent implements OnInit {
       this.i = 0;
     }
     this.battleText = this.creatures[this.i].name + "'s turn.";
+    console.log(this.creatures[this.i].name);
+
     console.log(this.i);
     if (this.players.includes(this.creatures[this.i])) {
       console.log("Player");
@@ -93,10 +106,10 @@ export class BattleComponent implements OnInit {
       this.creatures[i] = this.monsters[i - this.players.length];
     }
     this.creatures.sort((a, b) => (a.stats["SPEED"] < b.stats["SPEED"] ? 1 : -1));
-    console.log("XXXXXX");
-    console.log(this.creatures);
-    console.log(this.players);
-    console.log(this.monsters);
+    // console.log("XXXXXX");
+    // console.log(this.creatures);
+    // console.log(this.players);
+    // console.log(this.monsters);
     this.attackDto.battleId = this.battle.battleId;
   }
 
@@ -109,9 +122,17 @@ export class BattleComponent implements OnInit {
     let deadPlayers = 0;
     for (let i = 0; i < this.creatures.length; i++){
       if (!this.creatureIsAlive(this.creatures[i])){
+        //let deadCreature = this.creatures[i];
         delete this.creatures[i];
         deadPlayers++;
       }
+
+      this.battleService.getBattle(this.playerForm).subscribe(
+        battle => {
+          this.battle = battle as BattleModel;
+          this.monsters = this.battle.monsters;
+          this.arraysetUp();
+        });
     }
     return deadPlayers;
   }
