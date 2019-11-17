@@ -9,7 +9,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { PlayersComponent } from './Components/players/players.component';
 import { NewPlayerComponent } from './Components/new-player/new-player.component';
 import { BattleComponent } from './Components/battle/battle.component';
-import { PlayerTurnComponent } from './Components/player-turn/player-turn.component';
 import * as $ from "jquery";
 
 
@@ -21,7 +20,6 @@ import * as $ from "jquery";
     PlayersComponent,
     NewPlayerComponent,
     BattleComponent,
-    PlayerTurnComponent
   ],
   imports: [
     BrowserModule,
