@@ -9,7 +9,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { PlayersComponent } from './Components/players/players.component';
 import { NewPlayerComponent } from './Components/new-player/new-player.component';
 import { BattleComponent } from './Components/battle/battle.component';
+import { PlayerViewComponent } from './Components/player-view/player-view.component';
 import * as $ from "jquery";
+import { FinishBattleComponent } from './Components/finish-battle/finish-battle.component';
 
 
 @NgModule({
@@ -20,6 +22,8 @@ import * as $ from "jquery";
     PlayersComponent,
     NewPlayerComponent,
     BattleComponent,
+    PlayerViewComponent,
+    FinishBattleComponent,
   ],
   imports: [
     BrowserModule,

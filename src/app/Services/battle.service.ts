@@ -6,6 +6,7 @@ import { PlayerForm } from '../Classes/player-form';
 import { BattleModel } from '../Classes/battle-model';
 import { Observable } from 'rxjs';
 import { AttackDto } from '../Classes/attack-dto';
+import { Creature } from '../Classes/creature';
 
 
 @Injectable({
@@ -14,6 +15,7 @@ import { AttackDto } from '../Classes/attack-dto';
 export class BattleService {
   url: string;
   battle: BattleModel;
+  creatures: Creature[];
 
   constructor(private http: HttpClient) { 
     this.url = environment.baseUrl + '/battles';

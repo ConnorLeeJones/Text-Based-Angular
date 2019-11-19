@@ -11,6 +11,7 @@ import { Stat } from 'src/app/Classes/stat';
 import { AttackDto } from 'src/app/Classes/attack-dto';
 import { PlayerService } from 'src/app/Services/player.service';
 import { AttackService } from 'src/app/Services/attack.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-battle',
@@ -32,7 +33,7 @@ export class BattleComponent implements OnInit {
   attackDto: AttackDto = new AttackDto();
 
 
-  constructor(private battleService: BattleService, private playerService: PlayerService, private attackService: AttackService) { 
+  constructor(private battleService: BattleService, private playerService: PlayerService, private attackService: AttackService, private router: Router) { 
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.playerService.getPlayers().subscribe(players => this.players = players as Player[]);
     this.gameId = this.currentUser.userId;
@@ -79,6 +80,7 @@ export class BattleComponent implements OnInit {
 
     console.log(this.i);
     if (!this.creatureIsAlive(this.creatures[this.i])){
+        this.creatures[this.i].stats["HP"] = 0;
         this.i++;
         this.turns();
     } else if (this.players.includes(this.creatures[this.i])) {
@@ -97,6 +99,10 @@ export class BattleComponent implements OnInit {
   finish(){
     alert("Game over");
     this.i = -100;
+    this.battleService.battle = this.battle;
+    this.router.navigate(['/xp']);
+
+
   }
 
 
@@ -205,7 +211,9 @@ export class BattleComponent implements OnInit {
 
   playerAttack(){
     let monsterNames = [];
-    this.monsters.forEach(monster => monsterNames.push(monster))
+    this.monsters.forEach(monster => {
+      if (monster.stats["HP"] > 0){
+      monsterNames.push(monster)}});
     this.buttonSetUp(monsterNames);
   }
 
